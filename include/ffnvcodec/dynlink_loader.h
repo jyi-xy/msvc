@@ -152,6 +152,8 @@ typedef struct CudaFunctions {
     tcuMemAllocPitch_v2 *cuMemAllocPitch;
     tcuMemsetD8Async *cuMemsetD8Async;
     tcuMemFree_v2 *cuMemFree;
+    tcuMemcpy *cuMemcpy;
+    tcuMemcpyAsync *cuMemcpyAsync;
     tcuMemcpy2D_v2 *cuMemcpy2D;
     tcuMemcpy2DAsync_v2 *cuMemcpy2DAsync;
     tcuGetErrorName *cuGetErrorName;
@@ -176,9 +178,14 @@ typedef struct CudaFunctions {
     tcuEventRecord *cuEventRecord;
 
     tcuLaunchKernel *cuLaunchKernel;
+    tcuLinkCreate *cuLinkCreate;
+    tcuLinkAddData *cuLinkAddData;
+    tcuLinkComplete *cuLinkComplete;
+    tcuLinkDestroy *cuLinkDestroy;
     tcuModuleLoadData *cuModuleLoadData;
     tcuModuleUnload *cuModuleUnload;
     tcuModuleGetFunction *cuModuleGetFunction;
+    tcuModuleGetGlobal *cuModuleGetGlobal;
     tcuTexObjectCreate *cuTexObjectCreate;
     tcuTexObjectDestroy *cuTexObjectDestroy;
 
@@ -222,6 +229,7 @@ typedef struct CuvidFunctions {
     tcuvidCtxLock *cuvidCtxLock;
     tcuvidCtxUnlock *cuvidCtxUnlock;
 
+#if !defined(__APPLE__)
     tcuvidCreateVideoSource *cuvidCreateVideoSource;
     tcuvidCreateVideoSourceW *cuvidCreateVideoSourceW;
     tcuvidDestroyVideoSource *cuvidDestroyVideoSource;
@@ -229,6 +237,7 @@ typedef struct CuvidFunctions {
     tcuvidGetVideoSourceState *cuvidGetVideoSourceState;
     tcuvidGetSourceVideoFormat *cuvidGetSourceVideoFormat;
     tcuvidGetSourceAudioFormat *cuvidGetSourceAudioFormat;
+#endif
     tcuvidCreateVideoParser *cuvidCreateVideoParser;
     tcuvidParseVideoData *cuvidParseVideoData;
     tcuvidDestroyVideoParser *cuvidDestroyVideoParser;
@@ -283,6 +292,8 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuMemAllocPitch, tcuMemAllocPitch_v2, "cuMemAllocPitch_v2");
     LOAD_SYMBOL(cuMemsetD8Async, tcuMemsetD8Async, "cuMemsetD8Async");
     LOAD_SYMBOL(cuMemFree, tcuMemFree_v2, "cuMemFree_v2");
+    LOAD_SYMBOL(cuMemcpy, tcuMemcpy, "cuMemcpy");
+    LOAD_SYMBOL(cuMemcpyAsync, tcuMemcpyAsync, "cuMemcpyAsync");
     LOAD_SYMBOL(cuMemcpy2D, tcuMemcpy2D_v2, "cuMemcpy2D_v2");
     LOAD_SYMBOL(cuMemcpy2DAsync, tcuMemcpy2DAsync_v2, "cuMemcpy2DAsync_v2");
     LOAD_SYMBOL(cuGetErrorName, tcuGetErrorName, "cuGetErrorName");
@@ -307,9 +318,14 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuEventRecord, tcuEventRecord, "cuEventRecord");
 
     LOAD_SYMBOL(cuLaunchKernel, tcuLaunchKernel, "cuLaunchKernel");
+    LOAD_SYMBOL(cuLinkCreate, tcuLinkCreate, "cuLinkCreate");
+    LOAD_SYMBOL(cuLinkAddData, tcuLinkAddData, "cuLinkAddData");
+    LOAD_SYMBOL(cuLinkComplete, tcuLinkComplete, "cuLinkComplete");
+    LOAD_SYMBOL(cuLinkDestroy, tcuLinkDestroy, "cuLinkDestroy");
     LOAD_SYMBOL(cuModuleLoadData, tcuModuleLoadData, "cuModuleLoadData");
     LOAD_SYMBOL(cuModuleUnload, tcuModuleUnload, "cuModuleUnload");
     LOAD_SYMBOL(cuModuleGetFunction, tcuModuleGetFunction, "cuModuleGetFunction");
+    LOAD_SYMBOL(cuModuleGetGlobal, tcuModuleGetGlobal, "cuModuleGetGlobal");
     LOAD_SYMBOL(cuTexObjectCreate, tcuTexObjectCreate, "cuTexObjectCreate");
     LOAD_SYMBOL(cuTexObjectDestroy, tcuTexObjectDestroy, "cuTexObjectDestroy");
 
@@ -359,6 +375,7 @@ static inline int cuvid_load_functions(CuvidFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuvidCtxLock, tcuvidCtxLock, "cuvidCtxLock");
     LOAD_SYMBOL(cuvidCtxUnlock, tcuvidCtxUnlock, "cuvidCtxUnlock");
 
+#if !defined(__APPLE__)
     LOAD_SYMBOL(cuvidCreateVideoSource, tcuvidCreateVideoSource, "cuvidCreateVideoSource");
     LOAD_SYMBOL(cuvidCreateVideoSourceW, tcuvidCreateVideoSourceW, "cuvidCreateVideoSourceW");
     LOAD_SYMBOL(cuvidDestroyVideoSource, tcuvidDestroyVideoSource, "cuvidDestroyVideoSource");
@@ -366,6 +383,7 @@ static inline int cuvid_load_functions(CuvidFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuvidGetVideoSourceState, tcuvidGetVideoSourceState, "cuvidGetVideoSourceState");
     LOAD_SYMBOL(cuvidGetSourceVideoFormat, tcuvidGetSourceVideoFormat, "cuvidGetSourceVideoFormat");
     LOAD_SYMBOL(cuvidGetSourceAudioFormat, tcuvidGetSourceAudioFormat, "cuvidGetSourceAudioFormat");
+#endif
     LOAD_SYMBOL(cuvidCreateVideoParser, tcuvidCreateVideoParser, "cuvidCreateVideoParser");
     LOAD_SYMBOL(cuvidParseVideoData, tcuvidParseVideoData, "cuvidParseVideoData");
     LOAD_SYMBOL(cuvidDestroyVideoParser, tcuvidDestroyVideoParser, "cuvidDestroyVideoParser");
